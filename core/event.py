@@ -1,13 +1,62 @@
 import importlib
-from abc import ABC, abstractmethod
+from abc import ABC
 from core.listener import EventListener
+from pathlib import Path
+import os
 
 class Event(ABC):
     module = ""
+    
+    # Will continue development on this method
+    @classmethod
+    def get_files(cls, path):
+        for file in os.listdir(path):
+            if os.path.isfile(os.path.join(path, file)):
+                yield file
+    
+    # Will continue development on this method
+    @classmethod
+    def get_listener_name(cls):
+        cls_name = cls.__qualname__
+        
+        listener_name = ""
+        
+        index = 0
+        for item in cls_name:
+            _listener_name = ""
+            
+            if index > 0 and item.isupper():
+                _listener_name += "_"
+                _listener_name += item.lower()
+            elif item.isupper():
+                _listener_name += item.lower()
+            else:
+                _listener_name += item
+            
+            listener_name += _listener_name
+            index += 1
+                
+        splitted_name = listener_name.split("_")
+        length = len(splitted_name)
+        splitted_name[length - 1] = "listener"
+        
+        listener_name = "_".join(splitted_name)
+        
+        return listener_name
 
-    @staticmethod
-    @abstractmethod
-    def dispatch(self, payload: dict):
+    
+    @classmethod
+    def before(cls, **kwargs):
+        pass
+
+    @classmethod
+    def dispatch(cls, payload: dict, **kwargs):
+        cls.before(**kwargs)
+        cls.handle(payload)
+        cls.after(**kwargs)
+        
+    @classmethod
+    def after(cls, **kwargs):
         pass
     
     @classmethod

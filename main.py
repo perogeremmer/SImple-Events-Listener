@@ -7,4 +7,4 @@ payload = {
     "name": "Hudya"
 }
 
-SendEmailEvent.dispatch(payload)
+SendEmailEvent.dispatch(payload, name="Hudya")

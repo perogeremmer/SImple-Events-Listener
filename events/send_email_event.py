@@ -4,5 +4,9 @@ class SendEmailEvent(Event):
     module = "listeners.send_email_listener"
     
     @classmethod
-    def dispatch(cls, payload: dict):
-        cls.handle(payload)
+    def before(cls, **kwargs):
+        print("Before method")
+        
+    @classmethod
+    def after(cls, **kwargs):
+        print("after method")
